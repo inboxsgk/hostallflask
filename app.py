@@ -185,6 +185,10 @@ def submitted_preferences():
     # print(preferences=jsonify(preferences_data).data.decode('utf-8'))
     return render_template('room_pre.html', preferences=jsonify(preferences_data).data.decode('utf-8'))
 
+@app.route('/menu')
+def menu():
+    return render_template('menu.html')
+
 @app.route('/dashboard')
 def dashboard():
     if 'email' in session:
