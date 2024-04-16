@@ -41,9 +41,6 @@ class RoommatePreference(db.Model):
         self.class_slot = class_slot
         self.additional_preferences = additional_preferences
 
-
-
-
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -67,10 +64,13 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return redirect('/dashboard')
 
 @app.route('/register',methods=['GET','POST'])
 def register():
@@ -86,8 +86,6 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         return redirect('/login')
-
-
 
     return render_template('register.html')
 
@@ -106,7 +104,6 @@ def login():
             return render_template('login.html',error='Invalid user')
 
     return render_template('login.html')
-
 
 @app.route('/room_form', methods=['POST'])
 def room_form():
@@ -134,7 +131,7 @@ def room_form():
     else:
         return redirect('/login')
     # return render_template('room_form.html')
-    
+
 @app.route('/room')
 def room():
     if 'email' not in session:
@@ -146,8 +143,6 @@ def room():
         return render_template('room.html', user=user)
     else:
          return redirect('/login')
-
-
 
 @app.route('/submitted_preferences')
 def submitted_preferences():
@@ -184,6 +179,18 @@ def submitted_preferences():
     ]
     # print(preferences=jsonify(preferences_data).data.decode('utf-8'))
     return render_template('room_pre.html', preferences=jsonify(preferences_data).data.decode('utf-8'))
+
+@app.route('/room1')
+def room1():
+    if 'email' not in session:
+        return redirect('/login')
+    return render_template('roommate-finder.html')
+
+@app.route('/room1-sub')
+def room1_sub():
+    if 'email' not in session:
+        return redirect('/login')
+    return render_template('roommate-finder-res.html')
 
 @app.route('/menu')
 def menu():
