@@ -1,6 +1,7 @@
 from flask import Flask, request,render_template, redirect,session
 from flask_sqlalchemy import SQLAlchemy
 import bcrypt
+from flask import jsonify
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -21,6 +22,7 @@ class RoommatePreference(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
+    phone= db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     room_type = db.Column(db.String(100))
     block_preference = db.Column(db.String(100))
@@ -28,11 +30,12 @@ class RoommatePreference(db.Model):
     class_slot = db.Column(db.String(100))
     additional_preferences = db.Column(db.Text)
 
-    def __init__(self, user_id, name, email, room_type, block_preference, branch_preference, class_slot, additional_preferences):
+    def __init__(self, user_id, name, email,phone, room_type, block_preference, branch_preference, class_slot, additional_preferences):
         self.user_id = user_id
         self.name = name
         self.email = email
         self.room_type = room_type
+        self.phone=phone
         self.block_preference = block_preference
         self.branch_preference = branch_preference
         self.class_slot = class_slot
@@ -45,9 +48,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True)
-    block = db.Column(db.String(100), unique=True)
-    gender = db.Column(db.String(100), unique=True)
-    phone = db.Column(db.String(100), unique=True)
+    block = db.Column(db.String(100),nullable=False)
+    gender = db.Column(db.String(100),nullable=False)
+    phone = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100))
 
     def __init__(self,email,gender,phone,password,block,name):
@@ -118,6 +121,7 @@ def room_form():
             user_id=user.id,
             name=form_data['name'],
             email=form_data['email'],
+            phone=form_data['phone'],
             room_type=form_data['roomType'],
             block_preference=form_data['roommateNumber'],
             branch_preference=form_data['branchPreference'],
@@ -143,6 +147,8 @@ def room():
     else:
          return redirect('/login')
 
+
+
 @app.route('/submitted_preferences')
 def submitted_preferences():
     if 'email' not in session:
@@ -152,20 +158,32 @@ def submitted_preferences():
     if not current_user:
         return "User not found", 404
 
-    # Fetch preferences that are completely filled out and match the gender of the current user, excluding the current user's preferences
     filled_preferences = RoommatePreference.query.join(User).filter(
-        RoommatePreference.user_id != current_user.id,  # Exclude the current user's preferences
-        User.gender == current_user.gender,  # Match the gender of the current user
+        RoommatePreference.user_id != current_user.id,
+        User.gender == current_user.gender,
         RoommatePreference.room_type.isnot(None),
+        RoommatePreference.phone.isnot(None),
         RoommatePreference.block_preference.isnot(None),
         RoommatePreference.branch_preference.isnot(None),
         RoommatePreference.class_slot.isnot(None),
         RoommatePreference.additional_preferences.isnot(None)
     ).all()
 
-    return render_template('pref.html', preferences=filled_preferences)
-
-
+    preferences_data = [
+        {
+            "name": pref.name,
+            "contactDetails": pref.phone,
+            "branch": pref.branch_preference,
+            "special": pref.class_slot,
+            "email": pref.email,
+            "note": pref.additional_preferences,
+            "bed_count_pref": pref.room_type,
+            "block_pref": pref.block_preference,
+        }
+        for pref in filled_preferences
+    ]
+    # print(preferences=jsonify(preferences_data).data.decode('utf-8'))
+    return render_template('room_pre.html', preferences=jsonify(preferences_data).data.decode('utf-8'))
 
 @app.route('/dashboard')
 def dashboard():
