@@ -6,18 +6,56 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 app.secret_key = 'secret_key'
+# At the beginning of app.py, after the imports
+BLOCKS_JSON = [
+    {"block": "MHA", "warden": "Nathan"},
+    {"block": "MHB", "warden": "MuraliTharan"},
+    {"block": "MHC", "warden": "Senthilnathan"},
+    {"block": "MHD", "warden": "Vizac Arora"},
+    {"block": "LHA", "warden": "Washima"},
+    {"block": "LHE", "warden": " Pallavi "},
+    {"block": "LHF", "warden": "Sushmita Sen"},
+    {"block": "LHB", "warden": " Krishika Singhania"},
+]
+class RoommatePreference(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    room_type = db.Column(db.String(100))
+    block_preference = db.Column(db.String(100))
+    branch_preference = db.Column(db.String(100))
+    class_slot = db.Column(db.String(100))
+    additional_preferences = db.Column(db.Text)
+
+    def __init__(self, user_id, name, email, room_type, block_preference, branch_preference, class_slot, additional_preferences):
+        self.user_id = user_id
+        self.name = name
+        self.email = email
+        self.room_type = room_type
+        self.block_preference = block_preference
+        self.branch_preference = branch_preference
+        self.class_slot = class_slot
+        self.additional_preferences = additional_preferences
+
+
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True)
     block = db.Column(db.String(100), unique=True)
+    gender = db.Column(db.String(100), unique=True)
+    phone = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
 
-    def __init__(self,email,password,block,name):
+    def __init__(self,email,gender,phone,password,block,name):
         self.name = name
         self.email = email
         self.block= block
+        self.gender=gender
+        self.phone=phone
         self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     
     def check_password(self,password):
@@ -39,8 +77,9 @@ def register():
         email = request.form['email']
         block=request.form['block']
         password = request.form['password']
-
-        new_user = User(name=name,email=email,block=block,password=password)
+        gender= request.form['gender']
+        phone= request.form['phone']
+        new_user = User(name=name,email=email,block=block,gender=gender,phone=phone,password=password)
         db.session.add(new_user)
         db.session.commit()
         return redirect('/login')
@@ -66,11 +105,75 @@ def login():
     return render_template('login.html')
 
 
+@app.route('/room_form', methods=['POST'])
+def room_form():
+    if 'email' not in session:
+        # User is not logged in, redirect to login page
+        return redirect('/login')
+
+    user = User.query.filter_by(email=session['email']).first()
+    if user:
+        form_data = request.form
+        new_preference = RoommatePreference(
+            user_id=user.id,
+            name=form_data['name'],
+            email=form_data['email'],
+            room_type=form_data['roomType'],
+            block_preference=form_data['roommateNumber'],
+            branch_preference=form_data['branchPreference'],
+            class_slot=form_data['classSlot'],
+            additional_preferences=form_data['additionalPreferences']
+        )
+        db.session.add(new_preference)
+        db.session.commit()
+        return redirect('/submitted_preferences')  # Or wherever you want to redirect after submission
+    else:
+        return redirect('/login')
+    # return render_template('room_form.html')
+    
+@app.route('/room')
+def room():
+    if 'email' not in session:
+        return redirect('/login')
+    
+    user = User.query.filter_by(email=session['email']).first()
+    if user:
+        # Pass the user's details to the template
+        return render_template('room.html', user=user)
+    else:
+         return redirect('/login')
+
+@app.route('/submitted_preferences')
+def submitted_preferences():
+    if 'email' not in session:
+        return redirect('/login')
+
+    current_user = User.query.filter_by(email=session['email']).first()
+    if not current_user:
+        return "User not found", 404
+
+    # Fetch preferences that are completely filled out and match the gender of the current user, excluding the current user's preferences
+    filled_preferences = RoommatePreference.query.join(User).filter(
+        RoommatePreference.user_id != current_user.id,  # Exclude the current user's preferences
+        User.gender == current_user.gender,  # Match the gender of the current user
+        RoommatePreference.room_type.isnot(None),
+        RoommatePreference.block_preference.isnot(None),
+        RoommatePreference.branch_preference.isnot(None),
+        RoommatePreference.class_slot.isnot(None),
+        RoommatePreference.additional_preferences.isnot(None)
+    ).all()
+
+    return render_template('pref.html', preferences=filled_preferences)
+
+
+
 @app.route('/dashboard')
 def dashboard():
-    if session['email']:
+    if 'email' in session:
         user = User.query.filter_by(email=session['email']).first()
-        return render_template('dashboard.html',user=user)
+        user_block = user.block if user else None
+        warden = next((item['warden'] for item in BLOCKS_JSON if item['block'] == user_block), None)
+        return render_template('dashboard.html', user=user, warden=warden)
     
     return redirect('/login')
 
@@ -81,3 +184,6 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+

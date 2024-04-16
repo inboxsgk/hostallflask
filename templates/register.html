@@ -21,7 +21,7 @@
       <div id="navLinks">
         <a href="#">Dashboard</a>
         <a href="#">Mess menu</a>
-        <a href="#">Find Roommates</a>
+        <a href="/room">Find Roommates</a>
         <a href="#">Lost & Found</a>
       </div>
     </nav>
@@ -39,41 +39,55 @@
                 </div>
                 <div class="input-group">
                 <label for="email">Email:</label>
-                <input type="email"  id="username" placeholder="Enter email" name="email">
+                <input type="email"  id="email" placeholder="Enter email" name="email">
                 </div>
+                <div class="input-group">
+                  <label for="gender">Gender:</label>
+                  <select type="block"  id="gender" name="gender">
+                    <option value="None">None</option>
+                    <option value="None">Male</option>
+                    <option value="None">Female</option>
+                  </select>
+                  <!-- <input type="text" id="gender" placeholder="Enter gender" name="gender"> -->
+               </div>
+            
+               <div class="input-group">
+                <label for="name">Phone Number:</label>
+                <input type="text" id="phone" placeholder="Enter contact number" name="phone">
+             </div>
                 <div class="input-group">
                     <label for="block">Enter Hostel Block(MHH,LHH,LHE):</label>
                     <select type="block"  id="block" name="block">
-                      <option value="MH">None</option>
-                        <!-- Mens Hostel -->
-                        <option value="MH">MHA</option>
-                        <option value="MH">MHB</option>
-                        <option value="MH">MHC</option>
-                        <option value="MH">MHD</option>
-                        <option value="MH">MHE</option>
-                        <option value="MH">MHF</option>
-                        <option value="MH">MHG</option>
-                        <option value="MH">MHH</option>
-                        <option value="MH">MHJ</option>
-                        <option value="MH">MHK</option>
-                        <option value="MH">MHL</option>
-                        <option value="MH">MHM</option>
-                        <option value="MH">MHN</option>
-                        <option value="MH">MHP</option>
-                        <option value="MH">MHQ</option>
-                        <option value="MH">MHR</option>
-                        <option value="MH">MHS</option>
-                        <option value="MH">MHT</option>
+                      <option value="None">None</option>
+                      <!-- Mens Hostel -->
+                        <option value="MHA">MHA</option>
+                        <option value="MHB">MHB</option>
+                        <option value="MHC">MHC</option>
+                        <option value="MHD">MHD</option>
+                        <option value="MHE">MHE</option>
+                        <option value="MHF">MHF</option>
+                        <option value="MHG">MHG</option>
+                        <option value="MHH">MHH</option>
+                        <option value="MHJ">MHJ</option>
+                        <option value="MHK">MHK</option>
+                        <option value="MHL">MHL</option>
+                        <option value="MHM">MHM</option>
+                        <option value="MHN">MHN</option>
+                        <option value="MHP">MHP</option>
+                        <option value="MHQ">MHQ</option>
+                        <option value="MHR">MHR</option>
+                        <option value="MHS">MHS</option>
+                        <option value="MHT">MHT</option>
                         
         <!-- Ladies Hostel -->
-                        <option value="LH">LHA</option>
-                        <option value="LH">LHB</option>
-                        <option value="LH">LHC</option>
-                        <option value="LH">LHD</option> 
-                        <option value="LH">LHE</option>
-                        <option value="LH">LHF</option>
-                        <option value="LH">LHG</option>
-                        <option value="LH">LHH</option>
+                        <option value="LHA">LHA</option>
+                        <option value="LHB">LHB</option>
+                        <option value="LHC">LHC</option>
+                        <option value="LHD">LHD</option> 
+                        <option value="LHE">LHE</option>
+                        <option value="LHF">LHF</option>
+                        <option value="LHG">LHG</option>
+                        <option value="LHH">LHH</option>
                         <!-- Add more options as needed -->
                       </select>
                 </div>

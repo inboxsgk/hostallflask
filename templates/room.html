@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- ... other head elements ... -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <title>Hostall - Potential Roommates</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+  <header>
+    <h1>Hostall</h1>
+    <!--         <nav>
+            <a href="#">Dashboard</a>
+            <a href="#">Mess menu</a>
+            <a href="#">Find Roommates</a>
+            <a href="#">Lost & Found</a>
+        </nav> -->
+    <nav id="navbar">
+      <button id="mobileMenuToggle" aria-label="Toggle menu">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div id="navLinks">
+        <a href="#">Dashboard</a>
+        <a href="#">Mess menu</a>
+        <a href="#">Find Roommates</a>
+        <a href="#">Lost & Found</a>
+      </div>
+    </nav>
+    <div class="user-icon">
+      <i class="fas fa-user"></i> <!-- This is the Font Awesome User Icon -->
+    </div>
+  </header>
+  <!-- ... existing HTML ... -->
+<div class="form-container">
+    <h2>Roommate Preference Form</h2>
+    <p>Enter preferences for your roommate</p>
+        <form id="preferenceForm" method="POST" action="/room_form">
+            <label for="name">Name</label>
+            <input id="name"type="text" name="name" value="{{ user.name }}" readonly>
+       
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" value="{{ user.email }}" readonly>
+        <label for="roomType">Number of Roommates prefered</label>
+        <select id="roomType" name="roomType">
+            <option value="single">1</option>
+            <option value="single">2</option>
+            <option value="single">3</option>
+            <option value="single">4</option>
+            <option value="single">5</option>
+            <!-- <option value="single">6</option> -->
+            <!-- <option value="single">7</option>
+            <option value="single">8</option> -->
+            <!-- Add more options as needed -->
+        </select>
+        
+        <label for="roommateNumber">Block Preference</label>
+        <select id="roommateNumber" name="roommateNumber">
+            <option value="None">None</option>
+              <!-- Mens Hostel -->
+              <option value="MHA">MHA</option>
+              <option value="MHB">MHB</option>
+              <option value="MHC">MHC</option>
+              <option value="MHD">MHD</option>
+              <option value="MHE">MHE</option>
+              <option value="MHF">MHF</option>
+              <option value="MHG">MHG</option>
+              <option value="MHH">MHH</option>
+              <option value="MHJ">MHJ</option>
+              <option value="MHK">MHK</option>
+              <option value="MHL">MHL</option>
+              <option value="MHM">MHM</option>
+              <option value="MHN">MHN</option>
+              <option value="MHP">MHP</option>
+              <option value="MHQ">MHQ</option>
+              <option value="MHR">MHR</option>
+              <option value="MHS">MHS</option>
+              <option value="MHT">MHT</option>
+              
+<!-- Ladies Hostel -->
+              <option value="LHA">LHA</option>
+              <option value="LHB">LHB</option>
+              <option value="LHC">LHC</option>
+              <option value="LHD">LHD</option> 
+              <option value="LHE">LHE</option>
+              <option value="LHF">LHF</option>
+              <option value="LHG">LHG</option>
+              <option value="LHH">LHH</option>
+              <!-- Add more options as needed -->
+            </select>
+        
+        <label for="branchPreference">Branch Preference</label>
+        <select id="branchPreference" name="branchPreference">
+            <option value="cse">Computer Science</option>
+            <option value="ee">Electrical Engineering</option>
+            <!-- Add more options as needed -->
+        </select>
+        
+        <label for="classSlot">Classes Slot Preferred</label>
+        <select id="classSlot" name="classSlot">
+            <option value="morning">Morning</option>
+            <option value="evening">Evening</option>
+            <!-- Add more options as needed -->
+        </select>
+        
+        <label for="additionalPreferences">Additional Preferences</label>
+        <textarea id="additionalPreferences" name="additionalPreferences" placeholder="Submit Your Preferences for Mess, Sleep timings, Mother tongue etc."></textarea>
+        
+        <button type="submit">Submit →</button>
+    </form>
+</div>
+
+    <script>
+      // Toggle mobile menu
+    </script>
+
+</body>
+
+</html>
