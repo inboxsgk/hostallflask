@@ -11,11 +11,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), unique=True)
+    block = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
 
-    def __init__(self,email,password,name):
+    def __init__(self,email,password,block,name):
         self.name = name
         self.email = email
+        self.block= block
         self.password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     
     def check_password(self,password):
@@ -35,9 +37,10 @@ def register():
         # handle request
         name = request.form['name']
         email = request.form['email']
+        block=request.form['block']
         password = request.form['password']
 
-        new_user = User(name=name,email=email,password=password)
+        new_user = User(name=name,email=email,block=block,password=password)
         db.session.add(new_user)
         db.session.commit()
         return redirect('/login')
